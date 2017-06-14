@@ -1,3 +1,5 @@
+# require 'httparty'
+
 class MovieWrapper
   BASE_URL = "https://api.themoviedb.org/3/"
   KEY = ENV["MOVIEDB_KEY"]
@@ -8,8 +10,9 @@ class MovieWrapper
 
   def self.search(query)
     url = BASE_URL + "search/movie?api_key=" + KEY + "&query=" + query
-    # puts url
+
     response =  HTTParty.get(url)
+
     if response["total_results"] == 0
       return []
     else
@@ -18,6 +21,8 @@ class MovieWrapper
       end
       return movies
     end
+
+    puts "end of search of movieWrapper"
   end
 
   private
