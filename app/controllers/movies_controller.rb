@@ -1,13 +1,10 @@
-# require 'movie_wrapper'
 class MoviesController < ApplicationController
   before_action :require_movie, only: [:show]
 
   def index
     if params[:query]
-      puts "about to call Movie Wrapper"
       data = MovieWrapper.search(params[:query])
     else
-      puts "about to show all movies in rails db"
       data = Movie.all
     end
 
@@ -25,35 +22,15 @@ class MoviesController < ApplicationController
   end
 
   def create
-    p "in the create method of rails API"
-
-    movie = Movie.new(
-      title: params[:title],
-      overview: params[:overview],
-      release_date: params[:release_date],
-      image_url: params[:image_url],
-      inventory: 1
-    )
-
-    if movie.save
-      p "movie is in database"
-      render :json => movie.to_json, :status => :ok
+    modified_params = movie_params
+    modified_params[:image_url] = modified_params[:image_url].gsub("https://image.tmdb.org/t/p/w185","")
+    @movie = Movie.create(modified_params)
+    # byebug
+    if @movie.id == nil
+      render status: :bad_request
     end
+      render status: :ok, json: @movie.to_json
   end
-
-  # def create
-  #   pet = Pet.new(
-  #     name: params[:name],
-  #     age: params[:age],
-  #     breed: params[:breed],
-  #     about: params[:about],
-  #     vaccinated: params[:vaccinated]
-  #   )
-  #
-  #   if pet.save
-  #     render :json => pet.to_json, :status => :ok
-  #   end
-  # end
 
   private
 
@@ -63,4 +40,10 @@ class MoviesController < ApplicationController
       render status: :not_found, json: { errors: { title: ["No movie with title #{params["title"]}"] } }
     end
   end
+
+  def movie_params
+    return params.require(:movie).permit(:title, :overview, :release_date, :image_url, :inventory)
+  end
+
+
 end
