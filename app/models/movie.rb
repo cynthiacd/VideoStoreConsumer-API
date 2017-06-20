@@ -1,5 +1,7 @@
 class Movie < ApplicationRecord
-  attr_accessor :external_id
+  # attr_accessor :external_id
+  validates :release_date, uniqueness: true
+  validates :external_id, uniqueness: true, on: :create
 
   has_many :rentals
   has_many :customers, through: :rentals

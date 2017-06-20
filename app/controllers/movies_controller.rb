@@ -18,7 +18,7 @@ class MoviesController < ApplicationController
     render(
       status: :ok,
       json: @movie.as_json(
-        only: [:title, :overview, :release_date, :inventory],
+        only: [:title, :overview, :release_date, :inventory, :id],
         methods: [:available_inventory]
         )
       )
@@ -26,34 +26,24 @@ class MoviesController < ApplicationController
 
   def create
     p "in the create method of rails API"
+    # p params[:external_id]
 
     movie = Movie.new(
       title: params[:title],
       overview: params[:overview],
       release_date: params[:release_date],
-      image_url: params[:image_url],
-      inventory: 1
+      external_id: params[:external_id],
+      image_url: params[:image_url].gsub("https://image.tmdb.org/t/p/w185", ""),
+      inventory: params[:inventory]
     )
 
     if movie.save
       p "movie is in database"
       render :json => movie.to_json, :status => :ok
+    else
+      render :json => movie.errors, :status => :bad_request
     end
   end
-
-  # def create
-  #   pet = Pet.new(
-  #     name: params[:name],
-  #     age: params[:age],
-  #     breed: params[:breed],
-  #     about: params[:about],
-  #     vaccinated: params[:vaccinated]
-  #   )
-  #
-  #   if pet.save
-  #     render :json => pet.to_json, :status => :ok
-  #   end
-  # end
 
   private
 

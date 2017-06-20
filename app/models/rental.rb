@@ -5,8 +5,15 @@ class Rental < ApplicationRecord
   # validates :movie, uniqueness: { scope: :customer }
   validates :due_date, presence: true
   validate :due_date_in_future, on: :create
+  validate :check_inventory, on: :create
 
   after_initialize :set_checkout_date
+
+  def check_inventory
+    if self.movie.available_inventory < 1
+      errors.add(:inventory, "There is not enough inventory to check out this movie")
+    end
+  end
 
   def self.first_outstanding(movie, customer)
     self.where(movie: movie, customer: customer, returned: false).order(:due_date).first

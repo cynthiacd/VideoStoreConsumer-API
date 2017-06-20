@@ -6,7 +6,7 @@ class RentalsController < ApplicationController
     rental = Rental.new(movie: @movie, customer: @customer, due_date: params[:due_date], returned: false)
 
     if rental.save
-      render status: :ok, json: {}
+      render status: :ok, json: { rental: rental }
     else
       render status: :bad_request, json: { errors: rental.errors.messages }
     end
