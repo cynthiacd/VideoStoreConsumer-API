@@ -1,5 +1,5 @@
 class Movie < ApplicationRecord
-  attr_accessor :ava_inventory
+  # attr_accessor :ava_inventory
 
   validates :release_date, uniqueness: true
   validates :external_id, uniqueness: true, on: :create
