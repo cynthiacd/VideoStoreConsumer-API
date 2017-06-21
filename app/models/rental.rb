@@ -26,7 +26,7 @@ class Rental < ApplicationRecord
 private
   def due_date_in_future
     return unless self.due_date
-    unless due_date > Date.today
+    unless due_date > self.checkout_date
       errors.add(:due_date, "Must be in the future")
     end
   end

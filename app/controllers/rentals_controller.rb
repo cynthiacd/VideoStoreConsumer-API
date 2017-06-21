@@ -30,6 +30,7 @@ class RentalsController < ApplicationController
   end
 
   def overdue
+    p "preparing overdue movies"
     rentals = Rental.overdue.map do |rental|
       {
           title: rental.movie.title,
@@ -40,7 +41,11 @@ class RentalsController < ApplicationController
           due_date: rental.due_date
       }
     end
-    render status: :ok, json: rentals
+    if rentals.empty?
+      render status: :ok, json: { message: "no overdue rentals"}
+    else
+      render status: :ok, json: rentals
+    end
   end
 
 private
