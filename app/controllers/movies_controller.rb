@@ -27,9 +27,10 @@ class MoviesController < ApplicationController
     @movie = Movie.create(modified_params)
     # byebug
     if @movie.id == nil
-      render status: :bad_request
-    end
+      render status: :bad_request, json: @movie.errors.to_json
+    else
       render status: :ok, json: @movie.to_json
+    end
   end
 
   private
